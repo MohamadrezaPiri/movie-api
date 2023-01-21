@@ -1,7 +1,7 @@
 import requests
 from datetime import datetime
 from django.http import JsonResponse
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ReadOnlyModelViewSet
 from .models import Movie
 from .serializers import MoviewSerializer
 
@@ -37,6 +37,6 @@ def import_movies(request):
     return JsonResponse({'message': message})
 
 
-class MovieViewSet(ModelViewSet):
+class MovieViewSet(ReadOnlyModelViewSet):
     queryset = Movie.objects.all()
     serializer_class = MoviewSerializer
