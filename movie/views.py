@@ -45,3 +45,6 @@ class MovieViewSet(ReadOnlyModelViewSet):
 class ReviewViewSet(ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
+
+    def get_serializer_context(self):
+        return {'user_id': self.request.user.id, 'movie_id': self.kwargs['movie_pk']}
