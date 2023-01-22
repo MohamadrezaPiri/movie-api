@@ -1,6 +1,12 @@
 from rest_framework import serializers
-from djoser.serializers import UserCreateSerializer as BaseUserCreateSerializer,UserSerializer
-from .models import Movie
+from djoser.serializers import UserCreateSerializer as BaseUserCreateSerializer, UserSerializer
+from .models import Movie, Review
+
+
+class UserCreateSerializer(BaseUserCreateSerializer):
+    class Meta(BaseUserCreateSerializer.Meta):
+        fields = ['id', 'username', 'first_name',
+                  'last_name', 'email', 'password']
 
 
 class MoviewSerializer(serializers.ModelSerializer):
@@ -10,7 +16,7 @@ class MoviewSerializer(serializers.ModelSerializer):
                   'poster', 'imdb_rating', 'imdb_votes', 'imdb_id']
 
 
-class UserCreateSerializer(BaseUserCreateSerializer):
-    class Meta(BaseUserCreateSerializer.Meta):
-        fields = ['id', 'username', 'first_name',
-                  'last_name', 'email', 'password']
+class ReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = ['id', 'user', 'text', 'movie']

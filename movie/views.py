@@ -1,9 +1,9 @@
 import requests
 from datetime import datetime
 from django.http import JsonResponse
-from rest_framework.viewsets import ReadOnlyModelViewSet
-from .models import Movie
-from .serializers import MoviewSerializer
+from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet
+from .models import Movie, Review
+from .serializers import MoviewSerializer, ReviewSerializer
 
 # Create your views here.
 
@@ -40,3 +40,8 @@ def import_movies(request):
 class MovieViewSet(ReadOnlyModelViewSet):
     queryset = Movie.objects.all()
     serializer_class = MoviewSerializer
+
+
+class ReviewViewSet(ModelViewSet):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
