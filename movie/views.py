@@ -2,8 +2,10 @@ import requests
 from datetime import datetime
 from django.http import JsonResponse
 from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from .models import Movie, Review
 from .serializers import MoviewSerializer, ReviewSerializer
+from .permissions import IsAuthorOrReadOnly
 
 # Create your views here.
 
@@ -44,6 +46,7 @@ class MovieViewSet(ReadOnlyModelViewSet):
 
 class ReviewViewSet(ModelViewSet):
     serializer_class = ReviewSerializer
+    permission_classes = [IsAuthorOrReadOnly]
 
     def get_queryset(self):
         return Review.objects.filter(movie=self.kwargs['movie_pk'])
