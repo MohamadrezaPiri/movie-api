@@ -1,8 +1,8 @@
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from rest_framework import serializers
-from djoser.serializers import UserCreateSerializer as BaseUserCreateSerializer, UserSerializer
-from .models import Movie, Review
+from djoser.serializers import UserCreateSerializer as BaseUserCreateSerializer
+from .models import Movie, Review, Rating
 
 
 class UserCreateSerializer(BaseUserCreateSerializer):
@@ -22,6 +22,22 @@ class ReviewUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['username', 'id']
+
+
+class RatingSerializer(serializers.ModelSerializer):
+    user = ReviewUserSerializer(read_only=True)
+
+    class Meta:
+        model = Rating
+        fields = ['id', 'user', 'movie', 'stars']
+
+    def create(self, validated_data):
+        try:
+            user_id = self.context['user_id']
+            return Rating.objects.create(user_id=user_id, **validated_data)
+        except IntegrityError:
+            raise serializers.ValidationError(
+                {'user': 'You have already rated this movie.'})
 
 
 class ReviewSerializer(serializers.ModelSerializer):
