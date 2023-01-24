@@ -4,8 +4,8 @@ from django.http import JsonResponse
 from rest_framework.decorators import action
 from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet, mixins, GenericViewSet
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
-from .models import Movie, Review, Rating
-from .serializers import MoviewSerializer, ReviewSerializer
+from .models import Movie, Review, Rating, Movie
+from .serializers import MoviewSerializer, ReviewSerializer, RatingSerializer
 from .permissions import IsAuthorOrReadOnly
 
 # Create your views here.
@@ -43,6 +43,15 @@ def import_movies(request):
 class MovieViewSet(ReadOnlyModelViewSet):
     queryset = Movie.objects.all()
     serializer_class = MoviewSerializer
+
+
+class RatingViewset(mixins.CreateModelMixin, GenericViewSet):
+    serializer_class = RatingSerializer
+    queryset = Rating.objects.all()
+    permission_classes = [IsAuthenticated]
+
+    def get_serializer_context(self):
+        return {'user_id': self.request.user.id}
 
 
 class ReviewViewSet(ModelViewSet):
