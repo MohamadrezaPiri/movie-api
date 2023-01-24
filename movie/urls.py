@@ -6,6 +6,7 @@ from .views import MovieViewSet, import_movies, ReviewViewSet
 router = SimpleRouter()
 router.register('movies', MovieViewSet)
 
+
 movies_router = NestedSimpleRouter(router, 'movies', lookup='movie')
 movies_router.register('reviews', ReviewViewSet, basename='movie-reviews')
 

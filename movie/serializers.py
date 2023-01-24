@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.db import IntegrityError
 from rest_framework import serializers
 from djoser.serializers import UserCreateSerializer as BaseUserCreateSerializer, UserSerializer
 from .models import Movie, Review
@@ -14,7 +15,7 @@ class MoviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Movie
         fields = ['id', 'title', 'release_date', 'cast', 'crew', 'plot',
-                  'poster', 'imdb_rating', 'imdb_votes', 'imdb_id']
+                  'poster', 'imdb_rating', 'imdb_votes', 'imdb_id', 'votes', 'avg_rating']
 
 
 class ReviewUserSerializer(serializers.ModelSerializer):

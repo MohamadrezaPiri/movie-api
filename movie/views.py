@@ -1,9 +1,10 @@
 import requests
 from datetime import datetime
 from django.http import JsonResponse
-from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from .models import Movie, Review
+from rest_framework.decorators import action
+from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet, mixins, GenericViewSet
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from .models import Movie, Review, Rating
 from .serializers import MoviewSerializer, ReviewSerializer
 from .permissions import IsAuthorOrReadOnly
 
