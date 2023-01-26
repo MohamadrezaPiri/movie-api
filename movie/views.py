@@ -4,6 +4,7 @@ from django.http import JsonResponse
 from rest_framework.decorators import action
 from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet, mixins, GenericViewSet
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from rest_framework.pagination import PageNumberPagination
 from .models import Movie, Review, Rating, Movie
 from .serializers import MoviewSerializer, ReviewSerializer, RatingSerializer
 from .permissions import IsAuthorOrReadOnly
@@ -43,6 +44,7 @@ def import_movies(request):
 class MovieViewSet(ReadOnlyModelViewSet):
     queryset = Movie.objects.all()
     serializer_class = MoviewSerializer
+    pagination_class = PageNumberPagination
 
 
 class RatingViewset(mixins.CreateModelMixin, GenericViewSet):
