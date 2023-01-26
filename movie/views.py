@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from rest_framework.decorators import action
 from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet, mixins, GenericViewSet
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
-from rest_framework.filters import OrderingFilter
+from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.pagination import PageNumberPagination
 from django_filters.rest_framework.backends import DjangoFilterBackend
 from .models import Movie, Review, Rating, Movie
@@ -48,7 +48,8 @@ class MovieViewSet(ReadOnlyModelViewSet):
     serializer_class = MoviewSerializer
     pagination_class = PageNumberPagination
     ordering_fields = ['imdb_rating', 'avg_rating']
-    filter_backends = [DjangoFilterBackend, OrderingFilter]
+    search_fields = ['title', 'cast', 'crew']
+    filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
 
 
 class RatingViewset(mixins.CreateModelMixin, GenericViewSet):
