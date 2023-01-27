@@ -8,7 +8,7 @@ from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.pagination import PageNumberPagination
 from django_filters.rest_framework.backends import DjangoFilterBackend
 from .models import Movie, Review, Rating, Movie
-from .serializers import MoviewSerializer, ReviewSerializer, RatingSerializer
+from .serializers import MovieSerializer, ReviewSerializer, RatingSerializer
 from .permissions import IsAuthorOrReadOnly
 
 # Create your views here.
@@ -45,7 +45,7 @@ def import_movies(request):
 
 class MovieViewSet(ReadOnlyModelViewSet):
     queryset = Movie.objects.all()
-    serializer_class = MoviewSerializer
+    serializer_class = MovieSerializer
     pagination_class = PageNumberPagination
     ordering_fields = ['imdb_rating', 'avg_rating']
     search_fields = ['title', 'cast', 'crew']

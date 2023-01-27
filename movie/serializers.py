@@ -11,7 +11,7 @@ class UserCreateSerializer(BaseUserCreateSerializer):
                   'last_name', 'email', 'password']
 
 
-class MoviewSerializer(serializers.ModelSerializer):
+class MovieSerializer(serializers.ModelSerializer):
     class Meta:
         model = Movie
         fields = ['id', 'title', 'release_date', 'cast', 'crew', 'plot',
