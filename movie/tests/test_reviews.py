@@ -29,7 +29,7 @@ class TestCreateReview:
 
         client = APIClient()
         client.force_authenticate(user=user)
-        response = client.post('/movies/1/reviews/', {'text': 'a'})
+        response = client.post(f'/movies/{movie.id}/reviews/', {'text': 'a'})
 
         assert response.status_code == status.HTTP_201_CREATED
 
