@@ -1,62 +1,78 @@
 import pytest
 from django.contrib.auth.models import User
 from rest_framework import status
-from rest_framework.test import APIClient
 from movie.models import *
 
 
+# FIXTURES
+@pytest.fixture
+def create_review(api_client):
+    def do_create_review(movie_id, review):
+        return api_client.post(f'/movies/{movie_id}/reviews/', review)
+    return do_create_review
+
+
+@pytest.fixture
+def update_review(api_client):
+    def do_update_review(movie_id, review_id, review):
+        return api_client.put(f'/movies/{movie_id}/reviews/{review_id}/', review)
+    return do_update_review
+
+
+@pytest.fixture
+def delete_review(api_client):
+    def do_delete_review(movie_id, review_id):
+        return api_client.delete(f'/movies/{movie_id}/reviews/{review_id}/')
+    return do_delete_review
+
+
+# TESTS
 @pytest.mark.django_db
 class TestCreateReview:
-    def test_if_user_is_anonymous_returns_401(self):
-        client = APIClient()
-        response = client.post('/movies/1/reviews/', {'text': 'a'})
+    def test_if_user_is_anonymous_returns_401(self, create_review):
+        response = create_review('1', {'text': 'a'})
 
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
-    def test_if_data_is_invalid_returns_400(self):
-        client = APIClient()
-        client.force_authenticate(user=User())
-        response = client.post('/movies/1/reviews/', {'text': ''})
+    def test_if_data_is_invalid_returns_400(self, create_review, authenticate):
+        authenticate()
+        response = create_review('1', {'text': ''})
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST
 
-    def test_if_data_is_valid_returns_201(self):
+    def test_if_data_is_valid_returns_201(self, create_review, authenticate):
         movie = Movie.objects.create(
             release_date='2000-02-02', imdb_votes='33333', imdb_rating='3')
         user = User.objects.create(username='testuser')
         review = Review.objects.create(
             text='This is a review', user=user, movie=movie)
 
-        client = APIClient()
-        client.force_authenticate(user=user)
-        response = client.post(f'/movies/{movie.id}/reviews/', {'text': 'a'})
+        authenticate(user=user)
+        response = create_review(movie.id, {'text': 'a'})
 
         assert response.status_code == status.HTTP_201_CREATED
 
 
-@pytest.mark.django_db
+@ pytest.mark.django_db
 class TestUpdateReview:
-    def test_if_user_is_anonymous_returns_401(self):
-        client = APIClient()
-        response = client.put('/movies/1/reviews/1/', {'text': 'a'})
+    def test_if_user_is_anonymous_returns_401(self,  update_review):
+        response = update_review('1', '1', {'text': 'a'})
 
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
-    def test_if_data_is_invalid_returns_400(self):
-
+    def test_if_data_is_invalid_returns_400(self, update_review, authenticate):
         movie = Movie.objects.create(
             release_date='2000-02-02', imdb_votes='33333', imdb_rating='3')
         user = User.objects.create(username='testuser')
         review = Review.objects.create(
             text='This is a review', user=user, movie=movie)
 
-        client = APIClient()
-        client.force_authenticate(user=user)
-        response = client.put(
-            f'/movies/{movie.id}/reviews/{review.id}/', {'text': ''})
+        authenticate(user=user)
+        response = update_review(movie.id, review.id, {'text': ''})
+
         assert response.status_code == status.HTTP_400_BAD_REQUEST
 
-    def test_if_user_is_not_author_returns_403(self):
+    def test_if_user_is_not_author_returns_403(self, update_review, authenticate):
         movie = Movie.objects.create(
             release_date='2000-02-02', imdb_votes='33333', imdb_rating='3')
         author = User.objects.create(username='author')
@@ -64,28 +80,24 @@ class TestUpdateReview:
         review = Review.objects.create(
             text='This is a review', user=author, movie=movie)
 
-        client = APIClient()
-        client.force_authenticate(user=user)
-        response = client.put(
-            f'/movies/{movie.id}/reviews/{review.id}/', {'text': 'a'})
+        authenticate(user=user)
+        response = update_review(movie.id, review.id, {'text': 'a'})
 
         assert response.status_code == status.HTTP_403_FORBIDDEN
 
-    def test_if_user_is_author_returns_200(self):
+    def test_if_user_is_author_returns_200(self,  update_review, authenticate):
         movie = Movie.objects.create(
             release_date='2000-02-02', imdb_votes='33333', imdb_rating='3')
         author = User.objects.create(username='author')
         review = Review.objects.create(
             text='This is a review', user=author, movie=movie)
 
-        client = APIClient()
-        client.force_authenticate(user=author)
-        response = client.put(
-            f'/movies/{movie.id}/reviews/{review.id}/', {'text': 'a'})
+        authenticate(user=author)
+        response = update_review(movie.id, review.id, {'text': 'a'})
 
         assert response.status_code == status.HTTP_200_OK
 
-    def test_if_user_is_admin_returns_200(self):
+    def test_if_user_is_admin_returns_200(self, update_review, authenticate):
         movie = Movie.objects.create(
             release_date='2000-02-02', imdb_votes='33333', imdb_rating='3')
         author = User.objects.create(username='author')
@@ -93,23 +105,20 @@ class TestUpdateReview:
         review = Review.objects.create(
             text='This is a review', user=author, movie=movie)
 
-        client = APIClient()
-        client.force_authenticate(user=user)
-        response = client.put(
-            f'/movies/{movie.id}/reviews/{review.id}/', {'text': 'a'})
+        authenticate(user=user)
+        response = update_review(movie.id, review.id, {'text': 'a'})
 
         assert response.status_code == status.HTTP_200_OK
 
 
-@pytest.mark.django_db
+@ pytest.mark.django_db
 class TestDeleteReview:
-    def test_if_user_is_anonymous_returns_401(self):
-        client = APIClient()
-        response = client.delete('/movies/1/reviews/1/')
+    def test_if_user_is_anonymous_returns_401(self,  delete_review):
+        response = delete_review('1', '1')
 
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
-    def test_if_user_is_not_author_returns_403(self):
+    def test_if_user_is_not_author_returns_403(self,  delete_review, authenticate):
         movie = Movie.objects.create(
             release_date='2000-02-02', imdb_votes='33333', imdb_rating='3')
         author = User.objects.create(username='author')
@@ -117,28 +126,24 @@ class TestDeleteReview:
         review = Review.objects.create(
             text='This is a review', user=author, movie=movie)
 
-        client = APIClient()
-        client.force_authenticate(user=user)
-        response = client.delete(
-            f'/movies/{movie.id}/reviews/{review.id}/')
+        authenticate(user=user)
+        response = delete_review(movie.id, review.id)
 
         assert response.status_code == status.HTTP_403_FORBIDDEN
 
-    def test_if_user_is_author_returns_204(self):
+    def test_if_user_is_author_returns_204(self,  delete_review, authenticate):
         movie = Movie.objects.create(
             release_date='2000-02-02', imdb_votes='33333', imdb_rating='3')
         author = User.objects.create(username='author')
         review = Review.objects.create(
             text='This is a review', user=author, movie=movie)
 
-        client = APIClient()
-        client.force_authenticate(user=author)
-        response = client.delete(
-            f'/movies/{movie.id}/reviews/{review.id}/')
+        authenticate(user=author)
+        response = delete_review(movie.id, review.id)
 
         assert response.status_code == status.HTTP_204_NO_CONTENT
 
-    def test_if_user_is_admin_returns_204(self):
+    def test_if_user_is_admin_returns_204(self, delete_review, authenticate):
         movie = Movie.objects.create(
             release_date='2000-02-02', imdb_votes='33333', imdb_rating='3')
         author = User.objects.create(username='author')
@@ -146,9 +151,7 @@ class TestDeleteReview:
         review = Review.objects.create(
             text='This is a review', user=author, movie=movie)
 
-        client = APIClient()
-        client.force_authenticate(user=user)
-        response = client.delete(
-            f'/movies/{movie.id}/reviews/{review.id}/')
+        authenticate(user=user)
+        response = delete_review(movie.id, review.id)
 
         assert response.status_code == status.HTTP_204_NO_CONTENT
