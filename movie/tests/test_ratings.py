@@ -1,6 +1,7 @@
 import pytest
 from django.contrib.auth.models import User
 from rest_framework import status
+from model_bakery import baker
 from movie.models import *
 
 
@@ -21,9 +22,8 @@ class TestCreatRating:
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
     def test_if_user_has_already_rated_a_movie_returns_400(self,  create_rating, authenticate):
-        movie = Movie.objects.create(
-            release_date='2000-02-02', imdb_votes='33333', imdb_rating='3')
-        user = User.objects.create(username='testuser')
+        movie = baker.make(Movie)
+        user = baker.make(User)
 
         authenticate(user=user)
         response = create_rating({'movie': movie.id, 'stars': 3})
@@ -32,9 +32,8 @@ class TestCreatRating:
         assert response2.status_code == status.HTTP_400_BAD_REQUEST
 
     def test_if_rate_is_not_between_1_and_10_returns_400(self,  create_rating, authenticate):
-        movie = Movie.objects.create(
-            release_date='2000-02-02', imdb_votes='33333', imdb_rating='3')
-        user = User.objects.create(username='testuser')
+        movie = baker.make(Movie)
+        user = baker.make(User)
 
         authenticate(user=user)
         response = create_rating({'movie': movie.id, 'stars': 0})
@@ -42,9 +41,8 @@ class TestCreatRating:
         assert response.status_code == status.HTTP_400_BAD_REQUEST
 
     def test_if_rate_is_between_1_and_10_returns_201(self,  create_rating, authenticate):
-        movie = Movie.objects.create(
-            release_date='2000-02-02', imdb_votes='33333', imdb_rating='3')
-        user = User.objects.create(username='testuser')
+        movie = baker.make(Movie)
+        user = baker.make(User)
 
         authenticate(user=user)
         response = create_rating({'movie': movie.id, 'stars': 3})

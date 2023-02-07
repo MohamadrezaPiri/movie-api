@@ -1,5 +1,6 @@
 import pytest
 from rest_framework import status
+from model_bakery import baker
 from movie.models import *
 
 
@@ -11,8 +12,7 @@ class TestGetMovies:
         assert response.status_code == status.HTTP_200_OK
 
     def test_if_movie_retrieved_returns_200(self, api_client):
-        movie = Movie.objects.create(
-            release_date='2000-02-02', imdb_votes='33333', imdb_rating='3')
+        movie = baker.make(Movie)
 
         response = api_client.get(f'/movies/{movie.id}/')
 

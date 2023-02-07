@@ -1,6 +1,7 @@
 import pytest
 from django.contrib.auth.models import User
 from rest_framework import status
+from model_bakery import baker
 from movie.models import *
 
 
@@ -41,11 +42,9 @@ class TestCreateReview:
         assert response.status_code == status.HTTP_400_BAD_REQUEST
 
     def test_if_data_is_valid_returns_201(self, create_review, authenticate):
-        movie = Movie.objects.create(
-            release_date='2000-02-02', imdb_votes='33333', imdb_rating='3')
-        user = User.objects.create(username='testuser')
-        review = Review.objects.create(
-            text='This is a review', user=user, movie=movie)
+        movie = baker.make(Movie)
+        user = baker.make(User)
+        review = baker.make(Review, user=user, movie=movie)
 
         authenticate(user=user)
         response = create_review(movie.id, {'text': 'a'})
@@ -61,11 +60,9 @@ class TestUpdateReview:
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
     def test_if_data_is_invalid_returns_400(self, update_review, authenticate):
-        movie = Movie.objects.create(
-            release_date='2000-02-02', imdb_votes='33333', imdb_rating='3')
-        user = User.objects.create(username='testuser')
-        review = Review.objects.create(
-            text='This is a review', user=user, movie=movie)
+        movie = baker.make(Movie)
+        user = baker.make(User)
+        review = baker.make(Review, user=user, movie=movie)
 
         authenticate(user=user)
         response = update_review(movie.id, review.id, {'text': ''})
@@ -73,12 +70,10 @@ class TestUpdateReview:
         assert response.status_code == status.HTTP_400_BAD_REQUEST
 
     def test_if_user_is_not_author_returns_403(self, update_review, authenticate):
-        movie = Movie.objects.create(
-            release_date='2000-02-02', imdb_votes='33333', imdb_rating='3')
-        author = User.objects.create(username='author')
-        user = User.objects.create(username='testuser')
-        review = Review.objects.create(
-            text='This is a review', user=author, movie=movie)
+        movie = baker.make(Movie)
+        author = baker.make(User, username='author')
+        user = baker.make(User)
+        review = baker.make(Review, user=author, movie=movie)
 
         authenticate(user=user)
         response = update_review(movie.id, review.id, {'text': 'a'})
@@ -86,11 +81,10 @@ class TestUpdateReview:
         assert response.status_code == status.HTTP_403_FORBIDDEN
 
     def test_if_user_is_author_returns_200(self,  update_review, authenticate):
-        movie = Movie.objects.create(
-            release_date='2000-02-02', imdb_votes='33333', imdb_rating='3')
-        author = User.objects.create(username='author')
-        review = Review.objects.create(
-            text='This is a review', user=author, movie=movie)
+
+        movie = baker.make(Movie)
+        author = baker.make(User, username='author')
+        review = baker.make(Review, user=author, movie=movie)
 
         authenticate(user=author)
         response = update_review(movie.id, review.id, {'text': 'a'})
@@ -98,12 +92,10 @@ class TestUpdateReview:
         assert response.status_code == status.HTTP_200_OK
 
     def test_if_user_is_admin_returns_200(self, update_review, authenticate):
-        movie = Movie.objects.create(
-            release_date='2000-02-02', imdb_votes='33333', imdb_rating='3')
-        author = User.objects.create(username='author')
-        user = User.objects.create(username='testuser', is_staff=True)
-        review = Review.objects.create(
-            text='This is a review', user=author, movie=movie)
+        movie = baker.make(Movie)
+        author = baker.make(User, username='author')
+        user = baker.make(User, is_staff=True)
+        review = baker.make(Review, user=author, movie=movie)
 
         authenticate(user=user)
         response = update_review(movie.id, review.id, {'text': 'a'})
@@ -119,12 +111,10 @@ class TestDeleteReview:
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
     def test_if_user_is_not_author_returns_403(self,  delete_review, authenticate):
-        movie = Movie.objects.create(
-            release_date='2000-02-02', imdb_votes='33333', imdb_rating='3')
-        author = User.objects.create(username='author')
-        user = User.objects.create(username='testuser')
-        review = Review.objects.create(
-            text='This is a review', user=author, movie=movie)
+        movie = baker.make(Movie)
+        author = baker.make(User, username='author')
+        user = baker.make(User)
+        review = baker.make(Review, user=author, movie=movie)
 
         authenticate(user=user)
         response = delete_review(movie.id, review.id)
@@ -132,11 +122,9 @@ class TestDeleteReview:
         assert response.status_code == status.HTTP_403_FORBIDDEN
 
     def test_if_user_is_author_returns_204(self,  delete_review, authenticate):
-        movie = Movie.objects.create(
-            release_date='2000-02-02', imdb_votes='33333', imdb_rating='3')
-        author = User.objects.create(username='author')
-        review = Review.objects.create(
-            text='This is a review', user=author, movie=movie)
+        movie = baker.make(Movie)
+        author = baker.make(User, username='author')
+        review = baker.make(Review, user=author, movie=movie)
 
         authenticate(user=author)
         response = delete_review(movie.id, review.id)
@@ -144,12 +132,10 @@ class TestDeleteReview:
         assert response.status_code == status.HTTP_204_NO_CONTENT
 
     def test_if_user_is_admin_returns_204(self, delete_review, authenticate):
-        movie = Movie.objects.create(
-            release_date='2000-02-02', imdb_votes='33333', imdb_rating='3')
-        author = User.objects.create(username='author')
-        user = User.objects.create(username='testuser', is_staff=True)
-        review = Review.objects.create(
-            text='This is a review', user=author, movie=movie)
+        movie = baker.make(Movie)
+        author = baker.make(User, username='author')
+        user = baker.make(User, is_staff=True)
+        review = baker.make(Review, user=author, movie=movie)
 
         authenticate(user=user)
         response = delete_review(movie.id, review.id)
