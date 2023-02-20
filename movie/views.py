@@ -2,6 +2,7 @@ import requests
 from datetime import datetime
 from django.http import JsonResponse
 from rest_framework.decorators import action
+from rest_framework.exceptions import NotFound
 from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet, mixins, GenericViewSet
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated, AllowAny
 from rest_framework.filters import OrderingFilter, SearchFilter
@@ -66,7 +67,10 @@ class ReviewViewSet(ModelViewSet):
     permission_classes = [IsAuthorOrReadOnly]
 
     def get_queryset(self):
-        return Review.objects.filter(movie=self.kwargs['movie_pk'])
+        review = Review.objects.filter(movie=self.kwargs['movie_pk'])
+        if review.exists():
+            return review
+        raise NotFound()
 
     def get_serializer_context(self):
         return {'user_id': self.request.user.id, 'movie_id': self.kwargs['movie_pk']}
