@@ -40,4 +40,3 @@ http://127.0.0.1:8000/import_movies/?title=forrest+gump
 http://127.0.0.1:8000/ratings
 ```
 Authentication is required for rating movies
-- Use __[ModHeader](https://chrome.google.com/webstore/detail/modheader-modify-http-hea/idgpnmonknjnojddfkpgkljpfnnfcklj)__ extention for JWT Authentication
