@@ -9,7 +9,7 @@ from .models import Movie, Rating, Review
 
 @admin.register(Movie)
 class MovieAdmin(admin.ModelAdmin):
-    list_display = ['title', 'release_date', 'cast', 'crew','reviews']
+    list_display = ['title', 'release_date', 'cast', 'crew','reviews','votes','avg_rating']
     search_fields = ['title', 'cast']
 
     def reviews(self, movie):
