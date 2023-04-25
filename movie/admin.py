@@ -14,7 +14,7 @@ class MovieAdmin(admin.ModelAdmin):
 
     def reviews(self, movie):
         url = (
-            reverse('admin:movie_movie_changelist')
+            reverse('admin:movie_review_changelist')
             + '?'
             + urlencode({
                 'movie__id': str(movie.id)
