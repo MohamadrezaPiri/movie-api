@@ -17,7 +17,7 @@ class MovieAdmin(admin.ModelAdmin):
             reverse('admin:movie_review_changelist')
             + '?'
             + urlencode({
-                'movie__id': str(movie.id)
+                'movie__id': str(movie .id)
             }))
         return format_html('<a href="{}">{}</a>', url, movie.reviews_count)
     
@@ -28,12 +28,17 @@ class MovieAdmin(admin.ModelAdmin):
     
     @admin.action(description='Clear reviews')
     def clear_reviews(self, request, queryset):
-        updated_count = queryset.update(reviews=0)
+        total_reviews_count = sum(movie.reviews.count() for movie in queryset)
+        
+        for movie in queryset:
+            movie.reviews.all().delete()
+    
         self.message_user(
             request,
-            f'{updated_count} reviews were successfully deleted.',
-            messages.ERROR
+            f'{total_reviews_count} reviews cleared.',
+            messages.SUCCESS
         )
+
 
 
 @admin.register(Rating)
