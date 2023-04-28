@@ -1,4 +1,4 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.urls import reverse
 from django.db.models import Count
 from django.utils.html import urlencode, format_html
@@ -24,6 +24,15 @@ class MovieAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         return super().get_queryset(request).annotate(
             reviews=Count('review')
+        )
+    
+    @admin.action(description='Clear reviews')
+    def clear_reviews(self, request, queryset):
+        updated_count = queryset.update(reviews=0)
+        self.message_user(
+            request,
+            f'{updated_count} reviews were successfully deleted.',
+            messages.ERROR
         )
 
 
