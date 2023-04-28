@@ -9,21 +9,21 @@ from .models import Movie, Rating, Review
 
 @admin.register(Movie)
 class MovieAdmin(admin.ModelAdmin):
-    list_display = ['title', 'release_date', 'cast', 'crew','reviews','votes','avg_rating']
+    list_display = ['title', 'release_date', 'cast', 'crew','reviews_count','votes','avg_rating']
     search_fields = ['title', 'cast']
 
-    def reviews(self, movie):
+    def reviews_count(self, movie):
         url = (
             reverse('admin:movie_review_changelist')
             + '?'
             + urlencode({
                 'movie__id': str(movie.id)
             }))
-        return format_html('<a href="{}">{}</a>', url, movie.reviews)
+        return format_html('<a href="{}">{}</a>', url, movie.reviews_count)
     
     def get_queryset(self, request):
         return super().get_queryset(request).annotate(
-            reviews=Count('review')
+            reviews_count=Count('reviews')
         )
     
     @admin.action(description='Clear reviews')
