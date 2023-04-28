@@ -11,6 +11,7 @@ from .models import Movie, Rating, Review
 class MovieAdmin(admin.ModelAdmin):
     list_display = ['title', 'release_date', 'cast', 'crew','reviews_count','votes','avg_rating']
     search_fields = ['title', 'cast']
+    actions = ['clear_reviews']
 
     def reviews_count(self, movie):
         url = (
