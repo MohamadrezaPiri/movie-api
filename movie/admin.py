@@ -50,7 +50,7 @@ class MovieAdmin(admin.ModelAdmin):
         self.message_user(
             request,
             f'{updated_count} votes were successfully removed.',
-            messages.ERROR
+            messages.SUCCESS
         )
 
 
