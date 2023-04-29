@@ -40,6 +40,18 @@ class MovieAdmin(admin.ModelAdmin):
             messages.SUCCESS
         )
 
+    @admin.action(description='Clear votes')
+    def clear_votes(self, request, queryset):
+        updated_count = 0
+        for movie in queryset:
+            num_ratings = movie.votes() 
+            updated_count += num_ratings 
+            Rating.objects.filter(movie=movie).delete()
+        self.message_user(
+            request,
+            f'{updated_count} votes were successfully removed.',
+            messages.ERROR
+        )
 
 
 @admin.register(Rating)
