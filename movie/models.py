@@ -44,6 +44,8 @@ class Rating(models.Model):
         unique_together = [['user', 'movie']]
         index_together = [['user', 'movie']]
 
+    def __str__(self) -> str:
+        return self.movie.title
 
 class Review(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
