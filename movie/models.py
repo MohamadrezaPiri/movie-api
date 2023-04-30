@@ -57,5 +57,5 @@ class Review(models.Model):
         return self.user.username
     
     @property
-    def review_content(self):
+    def content(self):
         return truncatechars(self.text, 10)
