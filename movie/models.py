@@ -1,4 +1,5 @@
 from django.db import models
+from django.template.defaultfilters import truncatechars
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import User
 # Create your models here.
@@ -54,3 +55,7 @@ class Review(models.Model):
 
     def __str__(self) -> str:
         return self.user.username
+    
+    @property
+    def review_content(self):
+        return truncatechars(self.text, 10)
