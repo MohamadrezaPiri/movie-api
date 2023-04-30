@@ -62,5 +62,5 @@ class RatingAdmin(admin.ModelAdmin):
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
-    list_display = ['user', 'movie', 'text']
+    list_display = ['user', 'movie', 'review_content']
     autocomplete_fields = ['user', 'movie']
