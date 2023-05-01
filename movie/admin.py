@@ -64,3 +64,4 @@ class RatingAdmin(admin.ModelAdmin):
 class ReviewAdmin(admin.ModelAdmin):
     list_display = ['user', 'movie', 'content']
     autocomplete_fields = ['user', 'movie']
+    search_fields = ['user__username','movie__title']
