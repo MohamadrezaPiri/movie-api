@@ -1,10 +1,30 @@
 from django.contrib import admin, messages
 from django.urls import reverse
-from django.db.models import Count
+from django.db.models import Count,Avg,Q
 from django.utils.html import urlencode, format_html
 from .models import Movie, Rating, Review
 
 # Register your models here.
+
+
+class AvgRatingFilter(admin.SimpleListFilter):
+    title = 'avg rating'
+    parameter_name = 'avg_rating'
+
+    def lookups(self, request, model_admin):
+        return [
+            ('<5', 'Under 5'),
+            ('>5', 'Above 5')
+
+        ]
+
+    def queryset(self, request, queryset):
+        if self.value() == '<5':
+            annotated_value=queryset.annotate(avg_rating=Avg('rating__stars'))
+            return annotated_value.filter(avg_rating__lt=5)
+        elif self.value() == '>5':
+            return annotated_value.filter(Q(avg_rating__gt=5) | Q(avg_rating=5))
+        
 
 
 @admin.register(Movie)
