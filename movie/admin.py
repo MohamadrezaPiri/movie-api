@@ -49,7 +49,7 @@ class ReviewsCountFilter(admin.SimpleListFilter):
 @admin.register(Movie)
 class MovieAdmin(admin.ModelAdmin):
     list_display = ['title', 'release_date', 'cast', 'crew','reviews_count','votes','avg_rating']
-    list_filter = [AvgRatingFilter]
+    list_filter = [AvgRatingFilter,ReviewsCountFilter]
     search_fields = ['title', 'cast']
     actions = ['clear_reviews', 'clear_votes']
 
