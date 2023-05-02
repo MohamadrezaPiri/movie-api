@@ -1,6 +1,6 @@
 from django.contrib import admin, messages
 from django.urls import reverse
-from django.db.models import Count, Avg, Q, Sum
+from django.db.models import Count
 from django.utils.html import urlencode, format_html
 from .models import Movie, Rating, Review
 from .filters import ReviewsCountFilter, AvgRatingFilter
