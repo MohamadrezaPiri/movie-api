@@ -19,8 +19,8 @@ class AvgRatingFilter(admin.SimpleListFilter):
         ]
 
     def queryset(self, request, queryset):
+        annotated_value=queryset.annotate(avg_rating=Avg('rating__stars'))
         if self.value() == '<5':
-            annotated_value=queryset.annotate(avg_rating=Avg('rating__stars'))
             return annotated_value.filter(avg_rating__lt=5)
         elif self.value() == '>5':
             return annotated_value.filter(Q(avg_rating__gt=5) | Q(avg_rating=5))
