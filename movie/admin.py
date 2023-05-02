@@ -1,6 +1,6 @@
 from django.contrib import admin, messages
 from django.urls import reverse
-from django.db.models import Count,Avg,Q
+from django.db.models import Count, Avg, Q, Sum
 from django.utils.html import urlencode, format_html
 from .models import Movie, Rating, Review
 
@@ -25,6 +25,25 @@ class AvgRatingFilter(admin.SimpleListFilter):
         elif self.value() == '>5':
             return annotated_value.filter(Q(avg_rating__gt=5) | Q(avg_rating=5))
         
+
+class ReviewsCountFilter(admin.SimpleListFilter):
+    title = 'Reviews'
+    parameter_name = 'reviews_count'
+
+    def lookups(self, request, model_admin):
+        return [
+            ('=0', 'Without review'),
+            ('0<', 'With review')
+
+        ]
+
+    def queryset(self, request, queryset):
+        annotated_value=queryset.annotate(reviews_count=Count('reviews'))
+        if self.value() == '=0':
+            return annotated_value.filter(reviews_count=0)
+        elif self.value() == '0<':
+            return annotated_value.filter(reviews_count__gt=0)
+
 
 
 @admin.register(Movie)
