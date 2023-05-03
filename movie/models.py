@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib import admin
 from django.template.defaultfilters import truncatechars
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import User
@@ -17,9 +18,11 @@ class Movie(models.Model):
     imdb_votes = models.TextField()
     imdb_id = models.CharField(max_length=10)
 
+    @admin.display(ordering='rating')
     def votes(self):
         ratings = Rating.objects.filter(movie=self)
         return len(ratings)
+        
 
     def avg_rating(self):
         ratings = Rating.objects.filter(movie=self)
@@ -33,8 +36,8 @@ class Movie(models.Model):
 
     def __str__(self):
         return self.title
-
-
+    
+    
 class Rating(models.Model):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
