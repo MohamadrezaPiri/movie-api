@@ -14,6 +14,7 @@ class MovieAdmin(admin.ModelAdmin):
     search_fields = ['title', 'cast']
     actions = ['clear_reviews', 'clear_votes']
 
+    @admin.display(ordering='reviews_count')
     def reviews_count(self, movie):
         url = (
             reverse('admin:movie_review_changelist')
