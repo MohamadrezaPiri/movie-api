@@ -80,32 +80,32 @@ user = get_user_model()
 
 @admin.register(user)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ['username','first_name','last_name','email','is_staff','reviews_count','ratings_count']
+    list_display = ['username','first_name','last_name','email','is_staff','reviews','ratings']
     fields = ['username','first_name','last_name','email','password','is_staff']
     search_fields = ['username']
 
     @admin.display(ordering='reviews_count')
-    def reviews_count(self, user):
+    def reviews(self, user):
         url = (
             reverse('admin:movie_review_changelist')
             + '?'
             + urlencode({
                 'user__id': str(user .id)
             }))
-        return format_html('<a href="{}">{}</a>', url, user.reviews_count)
+        return format_html('<a href="{}">{}</a>', url, user.reviews)
     
-    def ratings_count(self, user):
+    def ratings(self, user):
         url = (
             reverse('admin:movie_rating_changelist')
             + '?'
             + urlencode({
                 'user__id': str(user .id)
             }))
-        return format_html('<a href="{}">{}</a>', url, user.ratings_count)
+        return format_html('<a href="{}">{}</a>', url, user.ratings)
     
     def get_queryset(self, request):
         return super().get_queryset(request).annotate(
-            reviews_count=Count('review'), ratings_count=Count('rating')
+            reviews=Count('review'), ratings=Count('rating')
         )
     
     
