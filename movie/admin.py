@@ -83,3 +83,14 @@ class UserAdmin(admin.ModelAdmin):
     list_display = ['username','first_name','last_name','email','is_staff']
     fields = ['username','first_name','last_name','email','password','is_staff']
     search_fields = ['username']
+
+    def reviews_count(self, user):
+        url = (
+            reverse('admin:movie_review_changelist')
+            + '?'
+            + urlencode({
+                'user__id': str(user .id)
+            }))
+        return format_html('<a href="{}">{}</a>', url, user.reviews_count)
+    
+    
