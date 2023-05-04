@@ -99,4 +99,13 @@ class UserAdmin(admin.ModelAdmin):
             reviews_count=Count('review')
         )
     
+    def ratings_count(self, user):
+        url = (
+            reverse('admin:movie_rating_changelist')
+            + '?'
+            + urlencode({
+                'user__id': str(user .id)
+            }))
+        return format_html('<a href="{}">{}</a>', url, user.ratings_count)
+    
     
