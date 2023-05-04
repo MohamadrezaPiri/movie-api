@@ -23,7 +23,6 @@ class Movie(models.Model):
         ratings = Rating.objects.filter(movie=self)
         return len(ratings)
         
-
     def avg_rating(self):
         ratings = Rating.objects.filter(movie=self)
         sum = 0

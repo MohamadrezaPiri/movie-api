@@ -2,6 +2,8 @@ from django.contrib import admin, messages
 from django.urls import reverse
 from django.db.models import Count
 from django.utils.html import urlencode, format_html
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
 from .models import Movie, Rating, Review
 from .filters import ReviewsCountFilter, AvgRatingFilter
 
@@ -70,3 +72,12 @@ class ReviewAdmin(admin.ModelAdmin):
     autocomplete_fields = ['user', 'movie']
     search_fields = ['user__username','movie__title']
     list_filter = ['user__username','movie']    
+
+
+admin.site.unregister(User)
+user = get_user_model()
+
+
+@admin.register(user)
+class UserAdmin(admin.ModelAdmin):
+    search_fields = ['username']
