@@ -94,11 +94,6 @@ class UserAdmin(admin.ModelAdmin):
             }))
         return format_html('<a href="{}">{}</a>', url, user.reviews_count)
     
-    def get_queryset(self, request):
-        return super().get_queryset(request).annotate(
-            reviews_count=Count('review')
-        )
-    
     def ratings_count(self, user):
         url = (
             reverse('admin:movie_rating_changelist')
@@ -107,5 +102,10 @@ class UserAdmin(admin.ModelAdmin):
                 'user__id': str(user .id)
             }))
         return format_html('<a href="{}">{}</a>', url, user.ratings_count)
+    
+    def get_queryset(self, request):
+        return super().get_queryset(request).annotate(
+            reviews_count=Count('review'), ratings_count=Count('rating')
+        )
     
     
