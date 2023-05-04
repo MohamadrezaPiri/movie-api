@@ -93,4 +93,9 @@ class UserAdmin(admin.ModelAdmin):
             }))
         return format_html('<a href="{}">{}</a>', url, user.reviews_count)
     
+    def get_queryset(self, request):
+        return super().get_queryset(request).annotate(
+            reviews_count=Count('review')
+        )
+    
     
