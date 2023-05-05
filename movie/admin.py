@@ -94,6 +94,7 @@ class UserAdmin(admin.ModelAdmin):
             }))
         return format_html('<a href="{}">{}</a>', url, user.reviews)
     
+    @admin.display(ordering='rating')
     def ratings(self, user):
         url = (
             reverse('admin:movie_rating_changelist')
