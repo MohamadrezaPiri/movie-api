@@ -84,9 +84,9 @@ user = get_user_model()
 @admin.register(user)
 class UserAdmin(admin.ModelAdmin):
     list_display = ['username','first_name','last_name','email','is_staff','reviews','ratings']
+    list_per_page = 10 
     fields = ['username','first_name','last_name','email','password','is_staff']
     search_fields = ['username']
-    list_per_page = 10
 
     @admin.display(ordering='review')
     def reviews(self, user):
@@ -114,3 +114,15 @@ class UserAdmin(admin.ModelAdmin):
         )
     
     
+    @admin.action(description='Clear reviews')
+    def clear_reviews(self, request, queryset):
+        total_reviews_count = sum(user.review_set.count() for user in queryset)
+        
+        for user in queryset:
+            user.review_set.all().delete()
+    
+        self.message_user(
+            request,
+            f'{total_reviews_count} reviews cleared.',
+            messages.SUCCESS
+        )
