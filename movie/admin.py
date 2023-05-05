@@ -87,6 +87,7 @@ class UserAdmin(admin.ModelAdmin):
     list_per_page = 10 
     fields = ['username','first_name','last_name','email','password','is_staff']
     search_fields = ['username']
+    actions = ['clear_reviews']
 
     @admin.display(ordering='review')
     def reviews(self, user):
