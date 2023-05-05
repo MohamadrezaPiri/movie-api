@@ -127,3 +127,16 @@ class UserAdmin(admin.ModelAdmin):
             f'{total_reviews_count} reviews cleared.',
             messages.SUCCESS
         )
+
+    @admin.action(description='Clear votes')
+    def clear_votes(self, request, queryset):
+        updated_count = 0
+        for user in queryset:
+            num_ratings = user.rating_set.count() 
+            updated_count += num_ratings 
+            Rating.objects.filter(user=user).delete()
+        self.message_user(
+            request,
+            f'{updated_count} votes were successfully removed.',
+            messages.SUCCESS
+        )
