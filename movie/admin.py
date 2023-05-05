@@ -84,7 +84,7 @@ class UserAdmin(admin.ModelAdmin):
     fields = ['username','first_name','last_name','email','password','is_staff']
     search_fields = ['username']
 
-    @admin.display(ordering='reviews_count')
+    @admin.display(ordering='review')
     def reviews(self, user):
         url = (
             reverse('admin:movie_review_changelist')
