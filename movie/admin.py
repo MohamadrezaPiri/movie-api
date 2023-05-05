@@ -83,7 +83,7 @@ user = get_user_model()
 
 @admin.register(user)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ['username','first_name','last_name','email','is_staff','reviews','ratings']
+    list_display = ['username','first_name','last_name','email','is_staff','reviews','votes']
     list_per_page = 10 
     fields = ['username','first_name','last_name','email','password','is_staff']
     search_fields = ['username']
@@ -100,7 +100,7 @@ class UserAdmin(admin.ModelAdmin):
         return format_html('<a href="{}">{}</a>', url, user.reviews)
     
     @admin.display(ordering='rating')
-    def ratings(self, user):
+    def votes(self, user):
         url = (
             reverse('admin:movie_rating_changelist')
             + '?'
