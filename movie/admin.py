@@ -13,6 +13,7 @@ from .filters import ReviewsCountFilter, AvgRatingFilter
 class MovieAdmin(admin.ModelAdmin):
     list_display = ['title', 'release_date', 'cast', 'crew','reviews_count','votes','avg_rating']
     list_filter = [AvgRatingFilter,ReviewsCountFilter]
+    list_per_page = 10
     search_fields = ['title', 'cast']
     actions = ['clear_reviews', 'clear_votes']
 
@@ -61,17 +62,19 @@ class MovieAdmin(admin.ModelAdmin):
 @admin.register(Rating)
 class RatingAdmin(admin.ModelAdmin):
     list_display = ['movie', 'user', 'stars']
+    list_filter = ['user__username']
+    list_per_page = 10
     autocomplete_fields = ['user', 'movie']
     search_fields = ['user__username']
-    list_filter = ['user__username']
 
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
     list_display = ['user', 'movie', 'content']
+    list_filter = ['user__username','movie']
+    list_per_page = 10
     autocomplete_fields = ['user', 'movie']
     search_fields = ['user__username','movie__title']
-    list_filter = ['user__username','movie']    
 
 
 admin.site.unregister(User)
@@ -83,6 +86,7 @@ class UserAdmin(admin.ModelAdmin):
     list_display = ['username','first_name','last_name','email','is_staff','reviews','ratings']
     fields = ['username','first_name','last_name','email','password','is_staff']
     search_fields = ['username']
+    list_per_page = 10
 
     @admin.display(ordering='review')
     def reviews(self, user):
