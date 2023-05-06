@@ -63,6 +63,7 @@ class MovieAdmin(admin.ModelAdmin):
 class RatingAdmin(admin.ModelAdmin):
     list_display = ['movie', 'user', 'stars']
     list_filter = ['user__username']
+    list_select_related = ['user','movie']
     list_per_page = 10
     autocomplete_fields = ['user', 'movie']
     search_fields = ['user__username']
