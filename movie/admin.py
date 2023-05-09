@@ -88,6 +88,7 @@ class UserAdmin(admin.ModelAdmin):
     list_display = ['username','first_name','last_name','email','is_staff','reviews','votes']
     list_per_page = 10 
     list_filter = ['is_staff']
+    list_editable = ['is_staff']
     fields = ['username','first_name','last_name','email','password','is_staff']
     search_fields = ['username']
     actions = ['clear_reviews','clear_votes']
