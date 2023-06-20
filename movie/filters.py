@@ -19,7 +19,25 @@ class AvgRatingFilter(admin.SimpleListFilter):
             return annotated_value.filter(avg_rating__lt=5)
         elif self.value() == '>5':
             return annotated_value.filter(Q(avg_rating__gt=5) | Q(avg_rating=5))
-        
+
+class UserVotesFilter(admin.SimpleListFilter):
+    title = 'Votes count'
+    parameter_name = 'votes'
+
+    def lookups(self, request, model_admin):
+        return [
+            ('=0', 'Without vote'),
+            ('>0', 'With vote')
+
+        ]
+
+    def queryset(self, request, queryset):
+        annotated_value=queryset.annotate(votes_count=Count('rating'))
+        if self.value() == '=0':
+            return annotated_value.filter(votes_count=0)
+        elif self.value() == '>0':
+            return annotated_value.filter(votes_count__gt=0)
+
 
 class ReviewsCountFilter(admin.SimpleListFilter):
     title = 'Reviews'
