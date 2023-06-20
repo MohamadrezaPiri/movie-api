@@ -20,7 +20,7 @@ class AvgRatingFilter(admin.SimpleListFilter):
         elif self.value() == '>5':
             return annotated_value.filter(Q(avg_rating__gt=5) | Q(avg_rating=5))
 
-class UserVotesFilter(admin.SimpleListFilter):
+class VotesCountFilter(admin.SimpleListFilter):
     title = 'Votes count'
     parameter_name = 'votes'
 
