@@ -87,7 +87,7 @@ user = get_user_model()
 class UserAdmin(admin.ModelAdmin):
     list_display = ['username','first_name','last_name','email','is_staff', 'is_superuser','reviews','votes']
     list_per_page = 10 
-    list_filter = ['is_staff']
+    list_filter = ['is_staff', 'is_superuser']
     list_editable = ['is_staff']
     fields = ['username','first_name','last_name','email','password','is_staff', 'is_superuser']
     search_fields = ['username']
