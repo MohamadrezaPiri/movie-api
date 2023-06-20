@@ -5,7 +5,7 @@ from django.utils.html import urlencode, format_html
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from .models import Movie, Rating, Review
-from .filters import ReviewsCountFilter, AvgRatingFilter, UserReviewsCountFilter
+from .filters import ReviewsCountFilter, AvgRatingFilter, UserReviewsCountFilter, UserVotesFilter
 
 # Register your models here.
 
@@ -87,7 +87,7 @@ user = get_user_model()
 class UserAdmin(admin.ModelAdmin):
     list_display = ['username','first_name','last_name','email','is_staff', 'is_superuser','reviews','votes']
     list_per_page = 10 
-    list_filter = ['is_staff', 'is_superuser', UserReviewsCountFilter]
+    list_filter = ['is_staff', 'is_superuser', UserReviewsCountFilter, UserVotesFilter]
     list_editable = ['is_staff']
     fields = ['username','first_name','last_name','email','password','is_staff', 'is_superuser']
     search_fields = ['username']
