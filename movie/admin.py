@@ -67,16 +67,25 @@ class RatingAdmin(admin.ModelAdmin):
     list_per_page = 10
     autocomplete_fields = ['user', 'movie']
     search_fields = ['user__username']
-
+    
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
-    list_display = ['user', 'movie', 'content']
+    list_display = ['user', '_movie', 'content']
     list_filter = ['user__username','movie__title']
     list_select_related = ['user','movie']
     list_per_page = 10
     autocomplete_fields = ['user', 'movie']
     search_fields = ['user__username','movie__title']
+
+    def _movie(self, review):
+        url = (
+            reverse('admin:movie_movie_changelist')
+            + '?'
+            + urlencode({
+                'review__id': str(review.id)
+            }))
+        return format_html('<a href="{}">{}</a>', url, review.movie)
 
 
 admin.site.unregister(User)

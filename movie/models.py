@@ -7,7 +7,6 @@ from django.contrib.auth.models import User
 
 
 class Movie(models.Model):
-
     title = models.CharField(max_length=255)
     release_date = models.DateField()
     cast = models.TextField()
@@ -22,7 +21,7 @@ class Movie(models.Model):
     def votes(self):
         ratings = Rating.objects.filter(movie=self)
         return len(ratings)
-        
+
     def avg_rating(self):
         ratings = Rating.objects.filter(movie=self)
         sum = 0
