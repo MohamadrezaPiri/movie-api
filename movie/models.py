@@ -59,4 +59,4 @@ class Review(models.Model):
     
     @property
     def content(self):
-        return truncatechars(self.text, 10)
+        return truncatechars(self.text, 20)
