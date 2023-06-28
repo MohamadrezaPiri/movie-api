@@ -78,6 +78,7 @@ class ReviewAdmin(admin.ModelAdmin):
     autocomplete_fields = ['user', 'movie']
     search_fields = ['user__username','movie__title']
 
+    @admin.display(ordering='movie')
     def _movie(self, review):
         url = (
             reverse('admin:movie_movie_changelist')
