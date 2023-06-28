@@ -14,7 +14,7 @@ class MovieAdmin(admin.ModelAdmin):
     list_display = ['title', 'release_date', 'cast', 'crew','reviews_count','votes','avg_rating']
     list_filter = [AvgRatingFilter,ReviewsCountFilter, VotesCountFilter]
     list_per_page = 10
-    search_fields = ['title', 'cast']
+    search_fields = ['title', 'cast', 'crew']
     actions = ['clear_reviews', 'clear_votes']
 
     @admin.display(ordering='reviews_count')
@@ -35,7 +35,7 @@ class MovieAdmin(admin.ModelAdmin):
     @admin.action(description='Clear reviews')
     def clear_reviews(self, request, queryset):
         total_reviews_count = sum(movie.reviews.count() for movie in queryset)
-        
+       
         for movie in queryset:
             movie.reviews.all().delete()
     
