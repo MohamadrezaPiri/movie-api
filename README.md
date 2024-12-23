@@ -39,4 +39,5 @@ http://127.0.0.1:8000/import_movies/?title=forrest+gump
 ```
 http://127.0.0.1:8000/ratings
 ```
-Authentication is required for rating movies
+Authentication is required for rating movies (Use [ModHeader](https://chromewebstore.google.com/detail/modheader-modify-http-hea/idgpnmonknjnojddfkpgkljpfnnfcklj?hl=en) for authentication)
+
