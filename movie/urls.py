@@ -4,11 +4,11 @@ from rest_framework_nested.routers import SimpleRouter, NestedSimpleRouter
 from .views import MovieViewSet, import_movies, ReviewViewSet, RatingViewset
 
 router = SimpleRouter()
-router.register('movies', MovieViewSet)
+router.register('', MovieViewSet)
 router.register('ratings', RatingViewset)
 
 
-movies_router = NestedSimpleRouter(router, 'movies', lookup='movie')
+movies_router = NestedSimpleRouter(router, '', lookup='movie')
 movies_router.register('reviews', ReviewViewSet, basename='movie-reviews')
 
 urlpatterns = [
