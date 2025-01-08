@@ -9,7 +9,7 @@ from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.pagination import PageNumberPagination
 from django_filters.rest_framework.backends import DjangoFilterBackend
 from .models import Movie, Review, Rating, Movie
-from .serializers import MovieSerializer, ReviewSerializer, RatingSerializer
+from .serializers import MovieSerializer, ReviewSerializer, RatingSerializer, SearchMovieSerializer
 from .permissions import IsAuthorOrReadOnly
 
 # Create your views here.
@@ -44,7 +44,7 @@ def import_movies(request):
     return JsonResponse({'message': message})
 
 
-class MovieViewSet(ReadOnlyModelViewSet):
+class MovieViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, GenericViewSet):
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
     pagination_class = PageNumberPagination
