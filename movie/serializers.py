@@ -1,3 +1,7 @@
+import requests
+from datetime import datetime
+from django.http import JsonResponse
+
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from rest_framework import serializers
@@ -16,6 +20,74 @@ class MovieSerializer(serializers.ModelSerializer):
         model = Movie
         fields = ['id', 'title', 'release_date', 'cast', 'crew', 'plot',
                   'poster', 'imdb_rating', 'imdb_votes', 'imdb_id', 'votes', 'avg_rating']
+        
+    def create(self, validated_data):
+        api_key = '8483343c'
+        movie_title = self.validated_data['title']
+        response = requests.get(
+            f"http://www.omdbapi.com/?apikey={api_key}&t={movie_title}")
+        movie_data = response.json()
+        if movie_data['Response'] == 'True':
+            release_date = datetime.strptime(
+                movie_data['Released'], '%d %b %Y').date()
+            if not Movie.objects.filter(title=movie_data['Title']).exists():
+                (movie, created) = Movie.objects.get_or_create(title=movie_data['Title'], defaults={
+                    'release_date': release_date,
+                    'cast': movie_data['Actors'],
+                    'crew': movie_data['Director'],
+                    'plot': movie_data['Plot'],
+                    'poster': movie_data['Poster'],
+                    'imdb_rating': movie_data['imdbRating'],
+                    'imdb_votes': movie_data['imdbVotes'],
+                    'imdb_id': movie_data['imdbID'],
+                })
+                if created:
+                    message = 'Movie imported successfully'
+                    return movie
+            else:
+                message = 'Movie already exists in database'
+                return JsonResponse({'message': message})
+        else:
+            message = 'Movie not found'
+            return JsonResponse({'message': message})
+
+             
+        
+
+class SearchMovieSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Movie
+        fields = ['title']
+
+    def create(self, validated_data):
+        api_key = '8483343c'
+        movie_title = self.validated_data['title']
+        response = requests.get(
+            f"http://www.omdbapi.com/?apikey={api_key}&t={movie_title}")
+        movie_data = response.json()
+        if movie_data['Response'] == 'True':
+            release_date = datetime.strptime(
+                movie_data['Released'], '%d %b %Y').date()
+            (movie, created) = Movie.objects.get_or_create(title=movie_data['Title'], defaults={
+                'release_date': release_date,
+                'cast': movie_data['Actors'],
+                'crew': movie_data['Director'],
+                'plot': movie_data['Plot'],
+                'poster': movie_data['Poster'],
+                'imdb_rating': movie_data['imdbRating'],
+                'imdb_votes': movie_data['imdbVotes'],
+                'imdb_id': movie_data['imdbID'],
+            })
+            if created:
+                message = 'Movie imported successfully'
+                return {movie}  
+            else:
+                message = 'Movie already exists in database'
+                return message
+        else:
+            message = 'Movie not found'
+            return message
+
 
 
 class ReviewUserSerializer(serializers.ModelSerializer):
