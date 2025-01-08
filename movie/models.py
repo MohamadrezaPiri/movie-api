@@ -8,14 +8,14 @@ from django.contrib.auth.models import User
 
 class Movie(models.Model):
     title = models.CharField(max_length=255)
-    release_date = models.DateField()
-    cast = models.TextField()
-    crew = models.TextField()
-    plot = models.TextField()
-    poster = models.URLField()
-    imdb_rating = models.FloatField()
-    imdb_votes = models.TextField()
-    imdb_id = models.CharField(max_length=10)
+    release_date = models.DateField(editable=False)
+    cast = models.TextField(editable=False)
+    crew = models.TextField(editable=False)
+    plot = models.TextField(editable=False)
+    poster = models.URLField(editable=False)
+    imdb_rating = models.FloatField(editable=False)
+    imdb_votes = models.TextField(editable=False)
+    imdb_id = models.CharField(max_length=10, editable=False)
 
     @admin.display(ordering='rating')
     def votes(self):
