@@ -20,6 +20,7 @@ class Movie(models.Model):
     imdb_rating = models.FloatField(editable=False)
     imdb_votes = models.TextField(editable=False)
     imdb_id = models.CharField(max_length=10, editable=False)
+    hits = models.ManyToManyField(IpAddress)
 
     @admin.display(ordering='rating')
     def votes(self):
