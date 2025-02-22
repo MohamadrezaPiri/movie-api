@@ -19,7 +19,12 @@ class MovieSerializer(serializers.ModelSerializer):
     class Meta:
         model = Movie
         fields = ['id', 'title', 'release_date', 'cast', 'crew', 'plot',
-                  'poster', 'imdb_rating', 'imdb_votes', 'imdb_id', 'votes', 'avg_rating']
+                  'poster', 'imdb_rating', 'imdb_votes', 'imdb_id', 'votes', 'avg_rating', 'hits']
+        
+        hits = serializers.SerializerMethodField(method_name='get_hits_count')
+
+        def get_hits_count(self, movie:Movie):
+            return movie.hits.count()
         
     def create(self, validated_data):
         api_key = '8483343c'
