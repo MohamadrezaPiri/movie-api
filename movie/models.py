@@ -6,6 +6,10 @@ from django.contrib.auth.models import User
 # Create your models here.
 
 
+class IpAddress(models.Model):
+    ip_address = models.GenericIPAddressField()
+
+
 class Movie(models.Model):
     title = models.CharField(max_length=255)
     release_date = models.DateField(editable=False)
