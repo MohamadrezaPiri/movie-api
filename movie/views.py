@@ -44,7 +44,14 @@ def import_movies(request):
     return JsonResponse({'message': message})
 
 
-class MovieViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, GenericViewSet):
+class MovieViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, mixins.RetrieveModelMixin,GenericViewSet):
+    def get_object(self):
+        obj = super().get_object()
+        ip = self.request.ip_address
+        if ip not in obj.hits.all():
+            obj.hits.add(ip)
+        return obj    
+    
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
     pagination_class = PageNumberPagination
